@@ -12,9 +12,9 @@ app = Flask(__name__)
 # 1. Get the Token from Vercel Environment Variables
 TOKEN = os.environ.get("TOKEN")
 
-# # 2. Define the Bot Logic
-# async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-#     await update.message.reply_text("Hello! I am an Echo Bot. I repeat everything you say.")
+# 2. Define the Bot Logic
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Hello! I am an Echo Bot. I repeat everything you say.")
 
 # async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
