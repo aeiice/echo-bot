@@ -1,21 +1,48 @@
 from flask import Flask, request
-from telegram import Update, Bot
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+from telegram import Update
+from telegram.ext import (
+    Application,
+    CommandHandler,
+    MessageHandler,
+    ContextTypes,
+    filters,
+)
+
 import asyncio
 import os
 
 from lib.parser import parse_weight
-from lib.sheets import save_weight
-from lib.sheets import save_weight, add_pet
+from lib.sheets import (
+    save_weight,
+    add_pet,
+    get_pet_list,
+)
 
 app = Flask(__name__)
 
 # 1. Get the Token from Vercel Environment Variables
 TOKEN = os.environ.get("TOKEN")
 
-# 2. Define the Bot Logic
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Hello! I am Chonky Pig Bot. I track how chonk your pigs are.")
+
+    await update.message.reply_text(
+        """🐹 Pet Weight Tracker
+
+Simply send:
+
+Butter 950g
+
+or
+
+Butter 0.95kg
+
+Commands:
+
+/addpet Butter
+/listpets
+/week Butter
+/month Butter"""
+    )
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
@@ -26,7 +53,7 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if result is None:
 
         await update.message.reply_text(
-            "❌ Format:\n\nluna 4.25kg\nmochi 3120g"
+            "❌ Invalid format.\n\nExample:\nButter 900g"
         )
 
         return
@@ -34,7 +61,7 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if result == "UNKNOWN_PET":
 
         await update.message.reply_text(
-            "❌ Unknown pet.\n\nAvailable:\n• Luna\n• Mochi"
+            "❌ Unknown pet.\n\nUse /listpets to see available pets."
         )
 
         return
@@ -80,6 +107,23 @@ async def addpet(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"⚠️ {name.title()} already exists."
         )
 
+async def listpets(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    pets = get_pet_list()
+
+    if len(pets) == 0:
+        await update.message.reply_text(
+            "No pets added yet."
+        )
+        return
+
+    message = "🐹 Current pets\n\n"
+
+    for pet in pets:
+        message += f"• {pet}\n"
+
+    await update.message.reply_text(message)
+
 # # 2. [OLD ECHO BOT LOGIC]
 # async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 #     await update.message.reply_text("Hello! I am an Echo Bot. I repeat everything you say.")
@@ -97,6 +141,8 @@ async def main(update_json):
     
     # Add handlers
     application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("addpet", addpet))
+    application.add_handler(CommandHandler("listpets", listpets))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
     
     # Process the update
