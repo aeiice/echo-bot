@@ -4,6 +4,9 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 import asyncio
 import os
 
+from lib.parser import parse_weight
+from lib.sheets import save_weight
+
 app = Flask(__name__)
 
 # 1. Get the Token from Vercel Environment Variables
@@ -14,9 +17,28 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Hello! I am an Echo Bot. I repeat everything you say.")
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # This is where the echo magic happens
-    user_text = update.message.text
-    await update.message.reply_text(f"You said: {user_text}")
+
+    text = update.message.text
+
+    result = parse_weight(text)
+
+    if result is None:
+        await update.message.reply_text(
+            "❌ Invalid format.\n\nExample:\n\nluna 4.25kg\nmochi 3150g"
+        )
+        return
+
+    pet, grams = result
+
+    save_weight(pet, grams)
+
+    await update.message.reply_text(
+        f"""✅ Saved!
+
+🐹 {pet}
+
+Weight: {grams/1000:.3f} kg"""
+    )
 
 # 3. Setup the Application (Using the async ApplicationBuilder)
 # We build it once to handle the update
