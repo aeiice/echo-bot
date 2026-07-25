@@ -12,33 +12,36 @@ app = Flask(__name__)
 # 1. Get the Token from Vercel Environment Variables
 TOKEN = os.environ.get("TOKEN")
 
-# 2. Define the Bot Logic
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Hello! I am an Echo Bot. I repeat everything you say.")
+# # 2. Define the Bot Logic
+# async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+#     await update.message.reply_text("Hello! I am an Echo Bot. I repeat everything you say.")
+
+# async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+#     text = update.message.text
+
+#     result = parse_weight(text)
+
+#     if result is None:
+#         await update.message.reply_text(
+#             "❌ Invalid format.\n\nExample:\n\nluna 4.25kg\nmochi 3150g"
+#         )
+#         return
+
+#     pet, grams = result
+
+#     save_weight(pet, grams)
+
+#     await update.message.reply_text(
+#         f"""✅ Saved!
+
+# 🐹 {pet}
+
+# Weight: {grams/1000:.3f} kg"""
+#     )
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
-    text = update.message.text
-
-    result = parse_weight(text)
-
-    if result is None:
-        await update.message.reply_text(
-            "❌ Invalid format.\n\nExample:\n\nluna 4.25kg\nmochi 3150g"
-        )
-        return
-
-    pet, grams = result
-
-    save_weight(pet, grams)
-
-    await update.message.reply_text(
-        f"""✅ Saved!
-
-🐹 {pet}
-
-Weight: {grams/1000:.3f} kg"""
-    )
+    await update.message.reply_text("✅ I received your message!")
 
 # 3. Setup the Application (Using the async ApplicationBuilder)
 # We build it once to handle the update
