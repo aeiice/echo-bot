@@ -6,6 +6,7 @@ import os
 
 from lib.parser import parse_weight
 from lib.sheets import save_weight
+from lib.sheets import save_weight, add_pet
 
 app = Flask(__name__)
 
@@ -58,29 +59,26 @@ Weight: {grams/1000:.3f} kg"""
             f"❌ Error\n\n{e}"
         )
 
-# async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def addpet(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
-#     text = update.message.text
+    if len(context.args) == 0:
+        await update.message.reply_text(
+            "Usage:\n/addpet Butter"
+        )
+        return
 
-#     result = parse_weight(text)
+    name = " ".join(context.args).strip()
 
-#     if result is None:
-#         await update.message.reply_text(
-#             "❌ Invalid format.\n\nExample:\n\nluna 4.25kg\nmochi 3150g"
-#         )
-#         return
+    success = add_pet(name)
 
-#     pet, grams = result
-
-#     save_weight(pet, grams)
-
-#     await update.message.reply_text(
-#         f"""✅ Saved!
-
-# 🐹 {pet}
-
-# Weight: {grams/1000:.3f} kg"""
-#     )
+    if success:
+        await update.message.reply_text(
+            f"✅ Added pet: {name.title()}"
+        )
+    else:
+        await update.message.reply_text(
+            f"⚠️ {name.title()} already exists."
+        )
 
 # # 2. [OLD ECHO BOT LOGIC]
 # async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
