@@ -14,21 +14,48 @@ TOKEN = os.environ.get("TOKEN")
 
 # 2. Define the Bot Logic
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Hello! I am an Echo Bot. I repeat everything you say.")
+    await update.message.reply_text("Hello! I am Chonky Pig Bot. I track how chonk your pigs are.")
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
-    try:
-        save_weight("test", 1234)
+    text = update.message.text
+
+    result = parse_weight(text)
+
+    if result is None:
 
         await update.message.reply_text(
-            "✅ Successfully wrote to Google Sheets!"
+            "❌ Format:\n\nluna 4.25kg\nmochi 3120g"
+        )
+
+        return
+
+    if result == "UNKNOWN_PET":
+
+        await update.message.reply_text(
+            "❌ Unknown pet.\n\nAvailable:\n• Luna\n• Mochi"
+        )
+
+        return
+
+    pet, grams = result
+
+    try:
+
+        save_weight(pet, grams)
+
+        await update.message.reply_text(
+            f"""✅ Saved!
+
+🐹 {pet}
+
+Weight: {grams/1000:.3f} kg"""
         )
 
     except Exception as e:
 
         await update.message.reply_text(
-            f"❌ Google Sheets error:\n\n{type(e).__name__}\n{e}"
+            f"❌ Error\n\n{e}"
         )
 
 # async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
