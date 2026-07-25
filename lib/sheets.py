@@ -64,3 +64,43 @@ def latest_weight(pet):
         return None
 
     return pet_rows[-1]
+
+def get_pets_sheet():
+    service_account = json.loads(os.environ["GOOGLE_SERVICE_ACCOUNT"])
+
+    credentials = Credentials.from_service_account_info(
+        service_account,
+        scopes=SCOPES
+    )
+
+    client = gspread.authorize(credentials)
+
+    spreadsheet = client.open("chonkypigs")
+
+    return spreadsheet.worksheet("Pets")
+
+
+def get_pet_list():
+
+    sheet = get_pets_sheet()
+
+    values = sheet.col_values(1)
+
+    if len(values) <= 1:
+        return []
+
+    return [pet.strip() for pet in values[1:] if pet.strip()]
+
+
+def add_pet(name):
+
+    sheet = get_pets_sheet()
+
+    pets = [p.lower() for p in get_pet_list()]
+
+    if name.lower() in pets:
+        return False
+
+    sheet.append_row([name.title()])
+
+    return True
