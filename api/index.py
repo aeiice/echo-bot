@@ -35,7 +35,7 @@ async def main(update_json):
     await application.shutdown()
 
 # 4. The Webhook Route (What Vercel runs)
-@app.route("/", methods=["POST"])
+@app.route("/", methods=["GET","POST"])
 def webhook():
     if request.method == "POST":
         # Get the JSON data sent by Telegram
