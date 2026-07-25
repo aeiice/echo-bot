@@ -12,9 +12,9 @@ app = Flask(__name__)
 # 1. Get the Token from Vercel Environment Variables
 TOKEN = os.environ.get("TOKEN")
 
-# 2. Define the Bot Logic
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Hello! I am an Echo Bot. I repeat everything you say.")
+# # 2. Define the Bot Logic
+# async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+#     await update.message.reply_text("Hello! I am an Echo Bot. I repeat everything you say.")
 
 # async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
@@ -40,8 +40,15 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Weight: {grams/1000:.3f} kg"""
 #     )
 
+# 2. [OLD ECHO BOT LOGIC]
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Hello! I am an Echo Bot. I repeat everything you say.")
+
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("✅ I received your message!")
+    # This is where the echo magic happens
+    user_text = update.message.text
+    await update.message.reply_text(f"You said: {user_text}")
+# END OF OLD ECHO BOT 
 
 # 3. Setup the Application (Using the async ApplicationBuilder)
 # We build it once to handle the update
