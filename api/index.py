@@ -26,7 +26,7 @@ TOKEN = os.environ.get("TOKEN")
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(
-        """🐹 Pet Weight Tracker
+        """🐹 Pig Weight Tracker
 
 Simply send:
 
@@ -117,7 +117,7 @@ async def listpets(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    message = "🐹 Current pets\n\n"
+    message = "🐹 Current pigs\n\n"
 
     for pet in pets:
         message += f"• {pet}\n"
