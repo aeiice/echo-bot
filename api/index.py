@@ -4,7 +4,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 import asyncio
 import os
 
-# from lib.parser import parse_weight
+from lib.parser import parse_weight
 from lib.sheets import save_weight
 
 app = Flask(__name__)
