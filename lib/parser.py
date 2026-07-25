@@ -1,35 +1,35 @@
 import re
 
-VALID_PETS = {
-    "luna": "Luna",
-    "mochi": "Mochi"
-}
+from lib.sheets import get_pet_list
 
 
 def parse_weight(text):
 
-    text = text.strip().lower()
+    text = text.strip()
 
-    pattern = r"^([a-z]+)\s+([\d.]+)\s*(kg|g)?$"
+    pattern = r"^(.+?)\s+([\d.]+)\s*(kg|g)?$"
 
-    match = re.match(pattern, text)
+    match = re.match(pattern, text, re.IGNORECASE)
 
     if not match:
         return None
 
-    pet = match.group(1)
+    pet_name = match.group(1).strip()
+    value = float(match.group(2))
+    unit = (match.group(3) or "g").lower()
 
-    if pet not in VALID_PETS:
+    pets = get_pet_list()
+
+    real_name = None
+
+    for pet in pets:
+        if pet.lower() == pet_name.lower():
+            real_name = pet
+            break
+
+    if real_name is None:
         return "UNKNOWN_PET"
 
-    value = float(match.group(2))
+    grams = round(value * 1000) if unit == "kg" else round(value)
 
-    unit = match.group(3)
-
-    if unit == "kg":
-        grams = round(value * 1000)
-
-    else:
-        grams = round(value)
-
-    return VALID_PETS[pet], grams
+    return real_name, grams
