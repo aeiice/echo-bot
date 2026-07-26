@@ -1,6 +1,6 @@
 import os
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import gspread
 from google.oauth2.service_account import Credentials
@@ -104,3 +104,53 @@ def add_pet(name):
     sheet.append_row([name.title()])
 
     return True
+
+def get_week(pet):
+
+    worksheet = get_worksheet()
+
+    rows = worksheet.get_all_records()
+
+    cutoff = datetime.now() - timedelta(days=7)
+
+    results = []
+
+    for row in rows:
+
+        if row["Pet"].lower() != pet.lower():
+            continue
+
+        timestamp = datetime.strptime(
+            row["Timestamp"],
+            "%Y-%m-%d %H:%M:%S"
+        )
+
+        if timestamp >= cutoff:
+            results.append(row)
+
+    return results
+
+def get_month(pet):
+
+    worksheet = get_worksheet()
+
+    rows = worksheet.get_all_records()
+
+    cutoff = datetime.now() - timedelta(days=30)
+
+    results = []
+
+    for row in rows:
+
+        if row["Pet"].lower() != pet.lower():
+            continue
+
+        timestamp = datetime.strptime(
+            row["Timestamp"],
+            "%Y-%m-%d %H:%M:%S"
+        )
+
+        if timestamp >= cutoff:
+            results.append(row)
+
+    return results
