@@ -128,6 +128,13 @@ def get_week(pet):
         if timestamp >= cutoff:
             results.append(row)
 
+    results.sort(
+        key=lambda r: datetime.strptime(
+            r["Timestamp"],
+            "%Y-%m-%d %H:%M:%S"
+        )
+    )
+
     return results
 
 def get_month(pet):
@@ -152,5 +159,12 @@ def get_month(pet):
 
         if timestamp >= cutoff:
             results.append(row)
+            
+    results.sort(
+        key=lambda r: datetime.strptime(
+            r["Timestamp"],
+            "%Y-%m-%d %H:%M:%S"
+        )
+    )
 
     return results
