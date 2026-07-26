@@ -161,7 +161,7 @@ async def week(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         message += (
             f"{dt.strftime('%d %b %I:%M %p')} "
-            f"- {int(row['Weight (g)'])}g\n"
+            f"- {int(row['Weight'])}g\n"
         )
 
     await update.message.reply_text(message)
@@ -199,7 +199,7 @@ async def month(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         message += (
             f"{dt.strftime('%d %b')} "
-            f"- {int(row['Weight (g)'])}g\n"
+            f"- {int(row['Weight'])}g\n"
         )
 
     await update.message.reply_text(message)
