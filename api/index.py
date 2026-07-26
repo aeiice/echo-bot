@@ -128,43 +128,89 @@ async def listpets(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(message)
 
+# async def week(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+#     if len(context.args) == 0:
+
+#         await update.message.reply_text(
+#             "Usage:\n/week Butter"
+#         )
+
+#         return
+
+#     pet = " ".join(context.args)
+
+#     rows = get_week(pet)
+
+#     if len(rows) == 0:
+
+#         await update.message.reply_text(
+#             "No records found."
+#         )
+
+#         return
+
+#     message = f"📅 {pet.title()} - Last 7 Days\n\n"
+
+#     for row in rows:
+
+#         dt = datetime.strptime(
+#             row["Timestamp"],
+#             "%Y-%m-%d %H:%M:%S"
+#         )
+
+#         message += (
+#             f"{dt.strftime('%d %b %I:%M %p')} "
+#             f"- {int(row['Weight'])}g\n"
+#         )
+
+#     await update.message.reply_text(message)
+
 async def week(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
-    if len(context.args) == 0:
+    try:
+
+        await update.message.reply_text("DEBUG: week command received")
+
+        if len(context.args) == 0:
+            await update.message.reply_text("Usage:\n/week Butter")
+            return
+
+        pet = " ".join(context.args)
+
+        await update.message.reply_text(f"Looking for: {pet}")
+
+        rows = get_week(pet)
+
+        await update.message.reply_text(f"Found {len(rows)} records")
+
+        if len(rows) == 0:
+            await update.message.reply_text("No records found.")
+            return
+
+        message = f"📅 {pet.title()} - Last 7 Days\n\n"
+
+        for row in rows:
+
+            await update.message.reply_text(str(row))
+
+            dt = datetime.strptime(
+                row["Timestamp"],
+                "%Y-%m-%d %H:%M:%S"
+            )
+
+            message += (
+                f"{dt.strftime('%d %b %I:%M %p')} - "
+                f"{int(row['Weight'])}g\n"
+            )
+
+        await update.message.reply_text(message)
+
+    except Exception as e:
 
         await update.message.reply_text(
-            "Usage:\n/week Butter"
+            f"❌ {type(e).__name__}\n\n{e}"
         )
-
-        return
-
-    pet = " ".join(context.args)
-
-    rows = get_week(pet)
-
-    if len(rows) == 0:
-
-        await update.message.reply_text(
-            "No records found."
-        )
-
-        return
-
-    message = f"📅 {pet.title()} - Last 7 Days\n\n"
-
-    for row in rows:
-
-        dt = datetime.strptime(
-            row["Timestamp"],
-            "%Y-%m-%d %H:%M:%S"
-        )
-
-        message += (
-            f"{dt.strftime('%d %b %I:%M %p')} "
-            f"- {int(row['Weight'])}g\n"
-        )
-
-    await update.message.reply_text(message)
 
 async def month(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
