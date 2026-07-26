@@ -11,11 +11,15 @@ from telegram.ext import (
 import asyncio
 import os
 
+from datetime import datetime
+
 from lib.parser import parse_weight
 from lib.sheets import (
     save_weight,
     add_pet,
     get_pet_list,
+    get_week,
+    get_month,
 )
 
 app = Flask(__name__)
@@ -124,6 +128,82 @@ async def listpets(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(message)
 
+async def week(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    if len(context.args) == 0:
+
+        await update.message.reply_text(
+            "Usage:\n/week Butter"
+        )
+
+        return
+
+    pet = " ".join(context.args)
+
+    rows = get_week(pet)
+
+    if len(rows) == 0:
+
+        await update.message.reply_text(
+            "No records found."
+        )
+
+        return
+
+    message = f"📅 {pet.title()} - Last 7 Days\n\n"
+
+    for row in rows:
+
+        dt = datetime.strptime(
+            row["Timestamp"],
+            "%Y-%m-%d %H:%M:%S"
+        )
+
+        message += (
+            f"{dt.strftime('%d %b %I:%M %p')} "
+            f"- {int(row['Weight (g)'])}g\n"
+        )
+
+    await update.message.reply_text(message)
+
+async def month(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    if len(context.args) == 0:
+
+        await update.message.reply_text(
+            "Usage:\n/month Butter"
+        )
+
+        return
+
+    pet = " ".join(context.args)
+
+    rows = get_month(pet)
+
+    if len(rows) == 0:
+
+        await update.message.reply_text(
+            "No records found."
+        )
+
+        return
+
+    message = f"📅 {pet.title()} - Last 30 Days\n\n"
+
+    for row in rows:
+
+        dt = datetime.strptime(
+            row["Timestamp"],
+            "%Y-%m-%d %H:%M:%S"
+        )
+
+        message += (
+            f"{dt.strftime('%d %b')} "
+            f"- {int(row['Weight (g)'])}g\n"
+        )
+
+    await update.message.reply_text(message)
+
 # # 2. [OLD ECHO BOT LOGIC]
 # async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 #     await update.message.reply_text("Hello! I am an Echo Bot. I repeat everything you say.")
@@ -143,6 +223,8 @@ async def main(update_json):
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("addpet", addpet))
     application.add_handler(CommandHandler("listpets", listpets))
+    application.add_handler(CommandHandler("week", week))
+    application.add_handler(CommandHandler("month", month))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
     
     # Process the update
