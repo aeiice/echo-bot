@@ -57,7 +57,7 @@ def latest_weight(pet):
 
     pet_rows = [
         row for row in rows
-        if .lower() == pet.lower()
+        if row["pet"].lower() == pet.lower()
     ]
 
     if not pet_rows:
@@ -121,7 +121,7 @@ def get_week(pet):
             continue
 
         timestamp = datetime.strptime(
-            row["Timestamp"],
+            row["timestamp"],
             "%Y-%m-%d %H:%M:%S"
         )
 
@@ -130,7 +130,7 @@ def get_week(pet):
 
     results.sort(
         key=lambda r: datetime.strptime(
-            r["Timestamp"],
+            r["timestamp"],
             "%Y-%m-%d %H:%M:%S"
         )
     )
@@ -153,7 +153,7 @@ def get_month(pet):
             continue
 
         timestamp = datetime.strptime(
-            row["Timestamp"],
+            row["timestamp"],
             "%Y-%m-%d %H:%M:%S"
         )
 
@@ -162,7 +162,7 @@ def get_month(pet):
             
     results.sort(
         key=lambda r: datetime.strptime(
-            r["Timestamp"],
+            r["timestamp"],
             "%Y-%m-%d %H:%M:%S"
         )
     )
