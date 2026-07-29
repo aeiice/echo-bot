@@ -20,6 +20,7 @@ from lib.sheets import (
     get_pet_list,
     get_week,
     get_month,
+    delete_last_weight,
 )
 
 app = Flask(__name__)
