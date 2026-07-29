@@ -168,3 +168,23 @@ def get_month(pet):
     )
 
     return results
+
+def delete_last_weight():
+
+    worksheet = get_worksheet()
+
+    rows = worksheet.get_all_values()
+
+    # Row 1 is the header
+    if len(rows) <= 1:
+        return None
+
+    last_row = rows[-1]
+
+    worksheet.delete_rows(len(rows))
+
+    return {
+        "timestamp": last_row[0],
+        "pet": last_row[1],
+        "weight": last_row[2]
+    }
