@@ -171,19 +171,13 @@ async def week(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
 
-        await update.message.reply_text("DEBUG: week command received")
-
         if len(context.args) == 0:
             await update.message.reply_text("Usage:\n/week Butter")
             return
 
         pet = " ".join(context.args)
-
-        await update.message.reply_text(f"Looking for: {pet}")
-
+        
         rows = get_week(pet)
-
-        await update.message.reply_text(f"Found {len(rows)} records")
 
         if len(rows) == 0:
             await update.message.reply_text("No records found.")
@@ -251,6 +245,34 @@ async def month(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(message)
 
+async def undo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    try:
+
+        deleted = delete_last_weight()
+
+        if deleted is None:
+            await update.message.reply_text(
+                "Nothing to undo."
+            )
+            return
+
+        await update.message.reply_text(
+            f"""↩️ Last weight entry removed
+
+🐹 {deleted["pet"]}
+
+⚖️ {deleted["weight"]}g
+
+📅 {deleted["timestamp"]}"""
+        )
+
+    except Exception as e:
+
+        await update.message.reply_text(
+            f"❌ Error\n\n{e}"
+        )
+
 # # 2. [OLD ECHO BOT LOGIC]
 # async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 #     await update.message.reply_text("Hello! I am an Echo Bot. I repeat everything you say.")
@@ -272,6 +294,7 @@ async def main(update_json):
     application.add_handler(CommandHandler("listpets", listpets))
     application.add_handler(CommandHandler("week", week))
     application.add_handler(CommandHandler("month", month))
+    application.add_handler(CommandHandler("undo", undo))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
     
     # Process the update
